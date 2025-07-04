@@ -6,7 +6,6 @@ plugins {
 android {
     namespace = 'com.tempwidget'
     compileSdk = 35
-    useAndroidX = true
 
     defaultConfig {
         applicationId = "com.tempwidget"
