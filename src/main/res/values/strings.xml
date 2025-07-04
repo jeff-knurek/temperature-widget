@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Temp Widget</string>
+    <string name="widget_name">Temperature Widget</string>
+    <string name="widget_description">Shows current temperature in both Celsius and Fahrenheit</string>
+
+    <!-- Permission messages -->
+    <string name="permission_required">Location permission required</string>
+    <string name="location_disabled">Location services disabled</string>
+
+    <!-- Error messages -->
+    <string name="weather_error">Weather data unavailable</string>
+    <string name="location_error">Location unavailable</string>
+    <string name="network_error">Network error</string>
+
+    <!-- Loading messages -->
+    <string name="loading_weather">Loading weather...</string>
+    <string name="loading_location">Getting location...</string>
+
+    <!-- Default values -->
+    <string name="default_temperature">--°</string>
+    <string name="default_location">Unknown Location</string>
+</resources>

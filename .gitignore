@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Local configuration
+local.properties
+*.iml
+.idea/
+.DS_Store
+
+# Android Studio
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.ap_
+
+# Kotlin-specific
+*.class
+*.kt~      # Backup files
+*.kts~     # Backup files
+
+# Logs
+*.log

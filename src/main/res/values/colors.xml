@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary colors -->
+    <color name="blue_primary">#4A90E2</color>
+    <color name="blue_primary_dark">#357ABD</color>
+
+    <!-- Secondary colors -->
+    <color name="blue_secondary">#67A3F0</color>
+    <color name="blue_secondary_dark">#4A90E2</color>
+
+    <!-- Basic colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#808080</color>
+    <color name="light_gray">#CCCCCC</color>
+
+    <!-- Widget colors -->
+    <color name="widget_text_primary">#FFFFFF</color>
+    <color name="widget_text_secondary">#CCFFFFFF</color>
+    <color name="widget_background_start">#4A90E2</color>
+    <color name="widget_background_end">#357ABD</color>
+</resources>
