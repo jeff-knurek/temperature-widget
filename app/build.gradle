@@ -4,27 +4,28 @@ plugins {
 }
 
 android {
-    namespace 'com.tempwidget'
-    compileSdk 35
+    namespace = 'com.tempwidget'
+    compileSdk = 35
+    useAndroidX = true
 
     defaultConfig {
-        applicationId "com.tempwidget"
-        minSdk 22  // Fire 7 (2017+) tablets - supports all generations
-        targetSdk 28  // Broad Fire tablet compatibility (API 28)
-        versionCode 1
-        versionName "1.0"
+        applicationId = "com.tempwidget"
+        minSdk = 22  // Fire 7 (2017+) tablets - supports all generations
+        targetSdk = 28  // Broad Fire tablet compatibility (API 28)
+        versionCode = 1
+        versionName = "1.0"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
