@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.tempwidget'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.tempwidget"
-        minSdk 22  // Fire 7 tablets typically run Android 5.1+ (API 22+)
-        targetSdk 34
+        minSdk 22  // Fire 7 (2017+) tablets - supports all generations
+        targetSdk 28  // Broad Fire tablet compatibility (API 28)
         versionCode 1
         versionName "1.0"
     }
@@ -33,12 +33,12 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.10.0'
-    implementation 'androidx.work:work-runtime-ktx:2.9.0'
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.work:work-runtime-ktx:2.10.0'
 
     // Network dependencies for weather API
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
-    implementation 'org.json:json:20231013'
+    implementation 'org.json:json:20240303'
 }
