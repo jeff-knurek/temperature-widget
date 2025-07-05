@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+import android.util.Log
 
 /**
  * Open-Meteo weather API implementation
@@ -29,6 +30,7 @@ class OpenMeteoApi(private val context: Context) : WeatherApi {
                 val params = context.getString(R.string.weather_api_params)
 
                 val url = "$baseUrl?latitude=$latitude&longitude=$longitude&$params"
+                Log.d("OpenMeteoApi", "Getting weather data for URL: $url")
 
                 val request = Request.Builder()
                     .url(url)
@@ -38,15 +40,18 @@ class OpenMeteoApi(private val context: Context) : WeatherApi {
 
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string()
+                    Log.d("OpenMeteoApi", "Weather service returned success: $responseBody")
                     if (responseBody != null) {
                         parseWeatherResponse(responseBody)
                     } else {
                         WeatherResult.Error("Empty response from weather service")
                     }
                 } else {
+                    Log.d("OpenMeteoApi", "Weather service returned error: ${response.code}")
                     WeatherResult.Error("Weather service returned error: ${response.code}")
                 }
             } catch (e: Exception) {
+                Log.d("OpenMeteoApi", "Network error: ${e.message}")
                 WeatherResult.Error("Network error: ${e.message}")
             }
         }
