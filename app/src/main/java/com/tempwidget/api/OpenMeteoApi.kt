@@ -37,7 +37,6 @@ class OpenMeteoApi(private val context: Context) : WeatherApi {
                     .build()
 
                 val response = client.newCall(request).execute()
-
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string()
                     Log.d("OpenMeteoApi", "Weather service returned success: $responseBody")
@@ -61,25 +60,49 @@ class OpenMeteoApi(private val context: Context) : WeatherApi {
         return try {
             val jsonObject = JSONObject(jsonString)
             val current = jsonObject.getJSONObject("current")
-
             val temperature = current.getDouble("temperature_2m")
             val humidity = current.getDouble("relative_humidity_2m")
-
             // Get dew point from hourly data (current hour)
             val hourly = jsonObject.getJSONObject("hourly")
             val dewPointArray = hourly.getJSONArray("dew_point_2m")
+            val tempArray = hourly.getJSONArray("temperature_2m")
+            val precipProbArray = hourly.getJSONArray("precipitation_probability")
+            val timeArray = hourly.getJSONArray("time")
             val dewPoint = if (dewPointArray.length() > 0) {
                 dewPointArray.getDouble(0)
             } else {
                 0.0
             }
-
+            // Find the index for now (first hour is now)
+            val nowIndex = 0
+            // Rain chance next 3 hours: max of next 3 precipProbArray values
+            var rainChanceNext3h = -1
+            for (i in nowIndex until minOf(nowIndex + 3, precipProbArray.length())) {
+                rainChanceNext3h = maxOf(rainChanceNext3h, precipProbArray.getInt(i))
+            }
+            // Find tomorrow's date string (YYYY-MM-DD)
+            val tomorrowDate = timeArray.getString(0).substring(0, 10)
+            var tomorrowHighTemp = Double.NaN
+            var tomorrowRainChance = -1
+            val tomorrowTemps = mutableListOf<Double>()
+            for (i in 0 until timeArray.length()) {
+                val timeStr = timeArray.getString(i)
+                if (timeStr.startsWith(tomorrowDate)) {
+                    tomorrowTemps.add(tempArray.getDouble(i))
+                    tomorrowRainChance = maxOf(tomorrowRainChance, precipProbArray.getInt(i))
+                }
+            }
+            if (tomorrowTemps.isNotEmpty()) {
+                tomorrowHighTemp = tomorrowTemps.maxOrNull() ?: Double.NaN
+            }
             val weatherData = WeatherData(
                 currentTemperature = temperature,
                 humidity = humidity,
-                dewPoint = dewPoint
+                dewPoint = dewPoint,
+                rainChanceNext3h = rainChanceNext3h,
+                tomorrowHighTemp = tomorrowHighTemp,
+                tomorrowRainChance = tomorrowRainChance
             )
-
             WeatherResult.Success(weatherData)
         } catch (e: Exception) {
             WeatherResult.Error("Failed to parse weather data: ${e.message}")

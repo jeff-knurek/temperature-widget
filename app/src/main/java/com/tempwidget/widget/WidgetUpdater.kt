@@ -72,6 +72,15 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
                             R.id.dew_point,
                             "Dew: ${TemperatureUtils.formatTemperature(weatherData.dewPoint, "F")}"
                         )
+                        // Set rain chance and tomorrow forecast
+                        views.setTextViewText(
+                            R.id.rain_chance,
+                            "Rain (3h): ${if (weatherData.rainChanceNext3h >= 0) weatherData.rainChanceNext3h else "--"}%"
+                        )
+                        views.setTextViewText(
+                            R.id.tomorrow_forecast,
+                            "Tomorrow: ${if (!weatherData.tomorrowHighTemp.isNaN()) TemperatureUtils.formatTemperature(weatherData.tomorrowHighTemp, "F") else "--°F"} / ${if (weatherData.tomorrowRainChance >= 0) weatherData.tomorrowRainChance else "--"}%"
+                        )
                         // Set local time in bottom right
                         val localTime = try {
                             java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
