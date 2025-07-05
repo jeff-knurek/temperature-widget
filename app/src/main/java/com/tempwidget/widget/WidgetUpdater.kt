@@ -13,6 +13,7 @@ import com.tempwidget.utils.TemperatureUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.util.Log
+import kotlin.math.roundToInt
 
 /**
  * Shared logic to update all main widget instances with latest weather/location
@@ -62,6 +63,15 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
                         if (weatherData.locationName != "Unknown Location") {
                             views.setTextViewText(R.id.location_name, weatherData.locationName)
                         }
+                        // Set humidity and dew point
+                        views.setTextViewText(
+                            R.id.humidity,
+                            "Humidity: ${weatherData.humidity.roundToInt()}%"
+                        )
+                        views.setTextViewText(
+                            R.id.dew_point,
+                            "Dew: ${TemperatureUtils.formatTemperature(weatherData.dewPoint, "F")}"
+                        )
                         // Set local time in bottom right
                         val localTime = try {
                             java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
