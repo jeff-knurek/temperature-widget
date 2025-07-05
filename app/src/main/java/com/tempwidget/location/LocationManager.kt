@@ -4,13 +4,18 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Bundle
 import androidx.core.content.ContextCompat
-import com.tempwidget.data.Location
 import com.tempwidget.data.LocationResult
+import com.tempwidget.data.Location
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import kotlin.coroutines.resume
+import android.util.Log
 
 /**
  * Manages location services for the widget
@@ -45,16 +50,26 @@ class LocationManager(private val context: Context) {
                 if (!hasLocationPermission()) {
                     return@withContext LocationResult.Error("Location permission not granted")
                 }
-
                 // Try to get last known location from different providers
-                val location = try {
-                    locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                var location: android.location.Location? = null
+                try {
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                         ?: locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                         ?: locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
                 } catch (e: SecurityException) {
                     return@withContext LocationResult.Error("Security exception: ${e.message}")
                 }
-
+                // If last known location is null, request a single update
+                if (location == null) {
+                    location = requestSingleLocationUpdate(locationManager, LocationManager.NETWORK_PROVIDER)
+                    if (location == null) {
+                        location = requestSingleLocationUpdate(locationManager, LocationManager.GPS_PROVIDER)
+                        if (location == null) {
+                            location = requestSingleLocationUpdate(locationManager, LocationManager.PASSIVE_PROVIDER)
+                        }
+                    }
+                    Log.d("LocationManager", "Location found individually: ${location?.latitude}, ${location?.longitude}")
+                }
                 if (location != null) {
                     val locationName = getLocationName(location.latitude, location.longitude)
                     LocationResult.Success(
@@ -65,7 +80,18 @@ class LocationManager(private val context: Context) {
                         )
                     )
                 } else {
-                    LocationResult.Error("Unable to get location. Please ensure location services are enabled.")
+                    // if still null, default to 40.7128, -74.0060
+                    location = android.location.Location(LocationManager.NETWORK_PROVIDER).apply {
+                        latitude = 40.7128
+                        longitude = -74.0060
+                    }
+                    return@withContext LocationResult.Success(
+                        com.tempwidget.data.Location(
+                            latitude = location.latitude,
+                            longitude = location.longitude,
+                            name =  "MA - default"
+                        )
+                    )
                 }
             } catch (e: Exception) {
                 LocationResult.Error("Location error: ${e.message}")
@@ -103,5 +129,26 @@ class LocationManager(private val context: Context) {
     fun isLocationEnabled(): Boolean {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    private suspend fun requestSingleLocationUpdate(
+        locationManager: LocationManager,
+        provider: String
+    ): android.location.Location? = suspendCancellableCoroutine { cont ->
+        val listener = object : LocationListener {
+            override fun onLocationChanged(location: android.location.Location) {
+                cont.resume(location)
+                locationManager.removeUpdates(this)
+            }
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
+        }
+        try {
+            locationManager.requestSingleUpdate(provider, listener, null)
+            cont.invokeOnCancellation { locationManager.removeUpdates(listener) }
+        } catch (e: Exception) {
+            cont.resume(null)
+        }
     }
 }
