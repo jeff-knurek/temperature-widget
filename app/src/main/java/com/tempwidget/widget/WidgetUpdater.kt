@@ -28,8 +28,6 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
     widgetIds.forEach { appWidgetId ->
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
         // Show loading state
-        views.setTextViewText(R.id.temp_celsius, "Loading...")
-        views.setTextViewText(R.id.temp_fahrenheit, "Loading...")
         views.setTextViewText(R.id.location_name, "Getting location...")
         appWidgetManager.updateAppWidget(appWidgetId, views)
 
@@ -64,6 +62,15 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
                         if (weatherData.locationName != "Unknown Location") {
                             views.setTextViewText(R.id.location_name, weatherData.locationName)
                         }
+                        // Set local time in bottom right
+                        val localTime = try {
+                            java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
+                        } catch (e: Throwable) {
+                            // Fallback for pre-API 26
+                            val cal = java.util.Calendar.getInstance()
+                            String.format("%02d:%02d", cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE))
+                        }
+                        views.setTextViewText(R.id.widget_time, "Updated: $localTime")
                     }
                     is WeatherResult.Error -> {
                         Log.d("WidgetUpdater", "Weather error: " + weatherResult.message)

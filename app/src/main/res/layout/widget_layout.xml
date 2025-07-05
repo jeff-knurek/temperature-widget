@@ -1,95 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@drawable/widget_background">
+    android:layout_height="match_parent">
 
-    <!-- Temperature display section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <!-- Celsius temperature -->
-        <TextView
-            android:id="@+id/temp_celsius"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="--°C"
-            android:textSize="@dimen/temp_text_size"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:fontFamily="sans-serif-light" />
-
-        <!-- Fahrenheit temperature -->
-        <TextView
-            android:id="@+id/temp_fahrenheit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="--°F"
-            android:textSize="@dimen/temp_text_size"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:fontFamily="sans-serif-light" />
-
-    </LinearLayout>
-
-    <!-- Location and additional info section -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:padding="16dp"
+        android:background="@drawable/widget_background">
 
-        <!-- Location name -->
-        <TextView
-            android:id="@+id/location_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Getting location..."
-            android:textSize="@dimen/location_text_size"
-            android:textColor="#CCFFFFFF"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="8dp" />
+        <!-- Temperature display section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <!-- Additional weather info (for future use) -->
+            <!-- Celsius temperature -->
+            <TextView
+                android:id="@+id/temp_celsius"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="--°C"
+                android:textSize="@dimen/temp_text_size"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:fontFamily="sans-serif-light" />
+
+            <!-- Fahrenheit temperature -->
+            <TextView
+                android:id="@+id/temp_fahrenheit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="--°F"
+                android:textSize="@dimen/temp_text_size"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:fontFamily="sans-serif-light" />
+
+        </LinearLayout>
+
+        <!-- Location and additional info section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:visibility="gone">
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-            <!-- Humidity -->
+            <!-- Location name -->
             <TextView
-                android:id="@+id/humidity"
+                android:id="@+id/location_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Humidity: --%"
-                android:textSize="@dimen/detail_text_size"
+                android:text="Getting location..."
+                android:textSize="@dimen/location_text_size"
                 android:textColor="#CCFFFFFF"
-                android:layout_marginEnd="16dp" />
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
 
-            <!-- Dew point -->
-            <TextView
-                android:id="@+id/dew_point"
-                android:layout_width="wrap_content"
+            <!-- Additional weather info (for future use) -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dew: --°"
-                android:textSize="@dimen/detail_text_size"
-                android:textColor="#CCFFFFFF" />
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <!-- Humidity -->
+                <TextView
+                    android:id="@+id/humidity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Humidity: --%"
+                    android:textSize="@dimen/detail_text_size"
+                    android:textColor="#CCFFFFFF"
+                    android:layout_marginEnd="16dp" />
+
+                <!-- Dew point -->
+                <TextView
+                    android:id="@+id/dew_point"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dew: --°"
+                    android:textSize="@dimen/detail_text_size"
+                    android:textColor="#CCFFFFFF" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/widget_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--:--"
+        android:textSize="12sp"
+        android:textColor="#99FFFFFF"
+        android:layout_gravity="bottom|end"
+        android:padding="8dp"
+        android:fontFamily="monospace"/>
+
+</FrameLayout>
