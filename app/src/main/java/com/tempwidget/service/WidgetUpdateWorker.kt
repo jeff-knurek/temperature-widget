@@ -59,25 +59,6 @@ class WidgetUpdateWorker(
         }
     }
 
-    /**
-     * Schedules the next periodic update
-     */
-    private fun scheduleNextUpdate() {
-        val updateIntervalMs = applicationContext.resources.getInteger(R.integer.widget_update_interval_ms)
-        val updateIntervalMinutes = updateIntervalMs / (60 * 1000)
-
-        val workRequest = PeriodicWorkRequestBuilder<WidgetUpdateWorker>(
-            updateIntervalMinutes.toLong(),
-            TimeUnit.MINUTES
-        ).build()
-
-        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-            "widget_periodic_update",
-            ExistingPeriodicWorkPolicy.KEEP,
-            workRequest
-        )
-    }
-
     private fun createForegroundInfo(): ForegroundInfo {
         val context = applicationContext
         val channelId = CHANNEL_ID
