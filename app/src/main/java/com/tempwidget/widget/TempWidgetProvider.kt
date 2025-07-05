@@ -18,6 +18,7 @@ import com.tempwidget.utils.TemperatureUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.util.Log
 
 /**
  * Temperature widget provider
@@ -91,20 +92,23 @@ class TempWidgetProvider : AppWidgetProvider() {
             appWidgetManager.updateAppWidget(appWidgetId, views)
             return
         }
+        Log.d("TempHiWidgetProvider", "Updating location: " + locationManager.hasLocationPermission())
 
         when (val locationResult = locationManager.getCurrentLocation()) {
             is LocationResult.Success -> {
                 val location = locationResult.location
+                Log.d("TempHiWidgetProvider", "Location name: " + location.name.toString())
                 views.setTextViewText(R.id.location_name, location.name)
 
                 when (val weatherResult = weatherApi.getWeatherData(location.latitude, location.longitude)) {
                     is WeatherResult.Success -> {
+                        Log.d("TempHiWidgetProvider", "Weather success")
                         val weatherData = weatherResult.data
 
                         // Temperature from API is in Fahrenheit
                         val tempF = weatherData.currentTemperature
                         val tempC = TemperatureUtils.fahrenheitToCelsius(tempF)
-
+                        Log.d("TempHiWidgetProvider", "Temperature: " + tempC.toString())
                         // Update temperature displays
                         views.setTextViewText(
                             R.id.temp_celsius,
@@ -125,6 +129,7 @@ class TempWidgetProvider : AppWidgetProvider() {
                         // views.setTextViewText(R.id.dew_point, "Dew: ${TemperatureUtils.formatTemperature(weatherData.dewPoint, "F")}")
                     }
                     is WeatherResult.Error -> {
+                        Log.d("TempHiWidgetProvider", "Weather error: " + weatherResult.message)
                         views.setTextViewText(R.id.temp_celsius, "Weather")
                         views.setTextViewText(R.id.temp_fahrenheit, "Error")
                         views.setTextViewText(R.id.location_name, weatherResult.message)
@@ -132,6 +137,7 @@ class TempWidgetProvider : AppWidgetProvider() {
                 }
             }
             is LocationResult.Error -> {
+                Log.d("TempHiWidgetProvider", "Location error: " + locationResult.message)
                 views.setTextViewText(R.id.temp_celsius, "Location")
                 views.setTextViewText(R.id.temp_fahrenheit, "Error")
                 views.setTextViewText(R.id.location_name, locationResult.message)
