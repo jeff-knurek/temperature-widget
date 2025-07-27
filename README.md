@@ -11,7 +11,10 @@ A temperature widget for Android devices, specifically designed for Amazon Fire 
 - **Background Updates**: WorkManager for reliable background updates
 
 ### Current Weather Service
-- **Open-Meteo API**: https://open-meteo.com/en/docs
+- **Pirate-Weather API**: https://pirateweather.net/en/latest/API/
+    - API is key required
+- __Open-Meteo API__: https://open-meteo.com/en/docs
+    - accuracy of percipitation was not very good
     - No API key required
 
 ## Development Setup
