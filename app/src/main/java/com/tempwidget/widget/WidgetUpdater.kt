@@ -35,7 +35,8 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
         // Calculate scaling factor based on width (minWidth is in dp)
         val scale = (minWidth / 200f).coerceIn(1f, 2.5f)
         // Temp text size: scale between 48sp and 130sp
-        val tempTextSize = (48f + (130f - 48f) * ((scale - 1f) / (2.5f - 1f))).coerceIn(48f, 130f)
+        val tempTextSizeF = (48f + (130f - 48f) * ((scale - 1f) / (2.5f - 1f))).coerceIn(48f, 130f)
+        val tempTextSizeC = (40f + (110f - 40f) * ((scale - 1f) / (2.5f - 1f))).coerceIn(48f, 130f)
         // Other text fields: default and max sizes
         val humidityDefault = 14f
         val dewPointDefault = 14f
@@ -58,8 +59,8 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
         val locationSize = (locationDefault + (locationMax - locationDefault) * ((scale - 1f) / (2.5f - 1f))).coerceIn(locationDefault, locationMax)
         val widgetTimeSize = (widgetTimeDefault + (widgetTimeMax - widgetTimeDefault) * ((scale - 1f) / (2.5f - 1f))).coerceIn(widgetTimeDefault, widgetTimeMax)
         // Set text sizes
-        views.setTextViewTextSize(R.id.temp_celsius, TypedValue.COMPLEX_UNIT_SP, tempTextSize)
-        views.setTextViewTextSize(R.id.temp_fahrenheit, TypedValue.COMPLEX_UNIT_SP, tempTextSize)
+        views.setTextViewTextSize(R.id.temp_celsius, TypedValue.COMPLEX_UNIT_SP, tempTextSizeC)
+        views.setTextViewTextSize(R.id.temp_fahrenheit, TypedValue.COMPLEX_UNIT_SP, tempTextSizeF)
         views.setTextViewTextSize(R.id.humidity, TypedValue.COMPLEX_UNIT_SP, humiditySize)
         views.setTextViewTextSize(R.id.dew_point, TypedValue.COMPLEX_UNIT_SP, dewPointSize)
         views.setTextViewTextSize(R.id.rain_chance, TypedValue.COMPLEX_UNIT_SP, rainChanceSize)
