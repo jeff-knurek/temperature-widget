@@ -76,6 +76,7 @@ python3 -m http.server 808
 ## Future Enhancements
 
 - Weather icon display
+    https://github.com/b-reich/MMM-PirateSkyForecast/blob/main/icons/iconsets.png
 - Widget configuration activity
 - Custom themes and colors
 

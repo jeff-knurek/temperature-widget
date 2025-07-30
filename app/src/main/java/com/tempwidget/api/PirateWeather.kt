@@ -65,25 +65,27 @@ class PirateWeatherApi(private val context: Context) : WeatherApi {
             val humidity = current.getDouble("humidity")
             val dewPoint = current.getDouble("dewPoint")
             // TODO: get the weather icon set that aligns with the icon in the response
-            // possible icons: https://community.home-assistant.io/t/animated-weather-icons-svg-for-all-dark-sky-values/150702
+            // possible icons:
+            //      https://github.com/b-reich/MMM-PirateSkyForecast/blob/main/icons/iconsets.png
+            //      https://github.com/bramkragten/weather-card/tree/master/icons
             // but maybe just some generic icons?
             // val icon = current.getString("icon")
 
             val hourly = jsonObject.getJSONObject("hourly").getJSONArray("data")
             var maxRainChanceNext3Hours = 0.0
-            var maxRainChanceNext20Hours = 0.0
+            var maxRainChanceNextDay = 0.0
             var tomorrowHighTemp = 0.0
             val totalHours = hourly.length().coerceAtMost(20)
             for (i in 0 until totalHours) {
                 val hourData = hourly.getJSONObject(i)
                 val precipProbability = hourData.optDouble("precipProbability", 0.0)
-                maxRainChanceNext20Hours = maxOf(maxRainChanceNext20Hours, precipProbability)
-                // also get Precipitation chance for the first 3 hours
+                // get Precipitation chance for the first 3 hours, and next day after that
                 if (i < 3) {
                     maxRainChanceNext3Hours = maxOf(maxRainChanceNext3Hours, precipProbability)
+                } else {
+                    maxRainChanceNextDay = maxOf(maxRainChanceNextDay, precipProbability)
+                    tomorrowHighTemp = maxOf(tomorrowHighTemp, hourData.optDouble("temperature"))
                 }
-                val highTemp = hourData.optDouble("temperature")
-                tomorrowHighTemp = maxOf(tomorrowHighTemp, highTemp)
             }
 
             val weatherData = WeatherData(
@@ -92,7 +94,7 @@ class PirateWeatherApi(private val context: Context) : WeatherApi {
                 dewPoint = dewPoint,
                 rainChanceNext3h = (maxRainChanceNext3Hours*100).toInt(),
                 tomorrowHighTemp = tomorrowHighTemp,
-                tomorrowRainChance = (maxRainChanceNext20Hours*100).toInt()
+                tomorrowRainChance = (maxRainChanceNextDay*100).toInt()
             )
             WeatherResult.Success(weatherData)
         } catch (e: Exception) {
