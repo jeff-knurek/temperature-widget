@@ -11,6 +11,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 import android.util.Log
+import com.tempwidget.BuildConfig
 
 /**
  * Pirate-Weather weather API implementation
@@ -28,7 +29,7 @@ class PirateWeatherApi(private val context: Context) : WeatherApi {
             try {
                 val baseUrl = context.getString(R.string.weather_api_base_url)
                 val params = context.getString(R.string.weather_api_params)
-                val apiKey = localProperties.getProperty("pirate_weather_api_key")
+                val apiKey = BuildConfig.PIRATE_WEATHER_API_KEY
 
                 val url = "$baseUrl/$apiKey/$latitude,$longitude?$params"
                 Log.d("PirateWeatherApi", "Getting weather data for URL: $url")

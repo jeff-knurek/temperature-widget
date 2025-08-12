@@ -22,6 +22,7 @@ A temperature widget for Android devices, specifically designed for Amazon Fire 
 ## Development Setup
 
 1. **Open in Android Studio**
+2. cp `gradle.properties` to `~/.gradle/gradle.properties` and set the `pirate_weather_api_key` in that file
 2. **Build and run** on an emulator or device
 3. **Add widget** to home screen through long-press menu
 
