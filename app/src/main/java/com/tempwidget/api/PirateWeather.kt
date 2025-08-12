@@ -62,7 +62,7 @@ class PirateWeatherApi(private val context: Context) : WeatherApi {
             val jsonObject = JSONObject(jsonString)
             val current = jsonObject.getJSONObject("currently")
             val temperature = current.getDouble("temperature")
-            val humidity = current.getDouble("humidity")
+            val humidity = current.getDouble("humidity") * 100
             val dewPoint = current.getDouble("dewPoint")
             // TODO: get the weather icon set that aligns with the icon in the response
             // possible icons:
