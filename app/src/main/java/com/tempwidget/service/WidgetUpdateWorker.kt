@@ -18,7 +18,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import com.tempwidget.R
-import com.tempwidget.api.OpenMeteoApi
+import com.tempwidget.api.PirateWeatherApi
 import com.tempwidget.data.LocationResult
 import com.tempwidget.data.WeatherResult
 import com.tempwidget.location.LocationManager

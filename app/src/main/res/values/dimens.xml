@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Widget dimensions for Fire 7 tablet -->
+    <!-- 350dp x 140dp is currently 9 x 3 (but says 5x2) -->
+    <!-- want it to be 9 x 6 -->
     <dimen name="widget_min_width">350dp</dimen>
     <dimen name="widget_min_height">140dp</dimen>
 

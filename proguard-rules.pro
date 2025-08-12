@@ -34,3 +34,5 @@
 # Keep WorkManager
 -keep class androidx.work.** { *; }
 -dontwarn androidx.work.**
+
+-keep class android.util.Log { *; }
