@@ -2,7 +2,7 @@
 <resources>
     <!-- Weather API configuration -->
     <string name="weather_api_base_url">https://api.pirateweather.net/forecast</string>
-    <string name="weather_api_params">exclude=minutely,alerts,daily&amp;units=us</string>
+    <string name="weather_api_params">exclude=minutely,alerts&amp;units=us</string>
 
     <integer name="widget_update_interval_minutes">15</integer>
 </resources>

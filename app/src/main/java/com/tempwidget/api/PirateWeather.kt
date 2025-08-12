@@ -12,6 +12,7 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 import android.util.Log
 import com.tempwidget.BuildConfig
+import kotlin.math.roundToInt
 
 /**
  * Pirate-Weather weather API implementation
@@ -65,28 +66,54 @@ class PirateWeatherApi(private val context: Context) : WeatherApi {
             val temperature = current.getDouble("temperature")
             val humidity = current.getDouble("humidity") * 100
             val dewPoint = current.getDouble("dewPoint")
-            // TODO: get the weather icon set that aligns with the icon in the response
-            // possible icons:
-            //      https://github.com/b-reich/MMM-PirateSkyForecast/blob/main/icons/iconsets.png
-            //      https://github.com/bramkragten/weather-card/tree/master/icons
-            // but maybe just some generic icons?
-            // val icon = current.getString("icon")
 
             val hourly = jsonObject.getJSONObject("hourly").getJSONArray("data")
             var maxRainChanceNext3Hours = 0.0
-            var maxRainChanceNextDay = 0.0
-            var tomorrowHighTemp = 0.0
-            val totalHours = hourly.length().coerceAtMost(20)
+            val totalHours = hourly.length().coerceAtMost(5)
             for (i in 0 until totalHours) {
                 val hourData = hourly.getJSONObject(i)
                 val precipProbability = hourData.optDouble("precipProbability", 0.0)
                 // get Precipitation chance for the first 3 hours, and next day after that
                 if (i < 3) {
                     maxRainChanceNext3Hours = maxOf(maxRainChanceNext3Hours, precipProbability)
-                } else {
-                    maxRainChanceNextDay = maxOf(maxRainChanceNextDay, precipProbability)
-                    tomorrowHighTemp = maxOf(tomorrowHighTemp, hourData.optDouble("temperature"))
                 }
+            }
+
+            // Parse daily data: skip today (index 0), take next two days (index 1 and 2)
+            var day1HighF = Double.NaN
+            var day1LowF = Double.NaN
+            var day1PrecipPct = -1
+            var day1Icon = ""
+            var day2HighF = Double.NaN
+            var day2LowF = Double.NaN
+            var day2PrecipPct = -1
+            var day2Icon = ""
+            try {
+                val dailyArray = jsonObject.optJSONObject("daily")?.optJSONArray("data")
+                if (dailyArray != null) {
+                    if (dailyArray.length() > 1) {
+                        val d1 = dailyArray.optJSONObject(1)
+                        if (d1 != null) {
+                            day1HighF = d1.optDouble("temperatureHigh", Double.NaN)
+                            day1LowF = d1.optDouble("temperatureLow", Double.NaN)
+                            val p1 = d1.optDouble("precipProbability", Double.NaN)
+                            day1PrecipPct = if (p1.isNaN()) -1 else (p1 * 100).roundToInt()
+                            day1Icon = d1.optString("icon", "")
+                        }
+                    }
+                    if (dailyArray.length() > 2) {
+                        val d2 = dailyArray.optJSONObject(2)
+                        if (d2 != null) {
+                            day2HighF = d2.optDouble("temperatureHigh", Double.NaN)
+                            day2LowF = d2.optDouble("temperatureLow", Double.NaN)
+                            val p2 = d2.optDouble("precipProbability", Double.NaN)
+                            day2PrecipPct = if (p2.isNaN()) -1 else (p2 * 100).roundToInt()
+                            day2Icon = d2.optString("icon", "")
+                        }
+                    }
+                }
+            } catch (_: Throwable) {
+                // keep defaults
             }
 
             val weatherData = WeatherData(
@@ -94,8 +121,14 @@ class PirateWeatherApi(private val context: Context) : WeatherApi {
                 humidity = humidity,
                 dewPoint = dewPoint,
                 rainChanceNext3h = (maxRainChanceNext3Hours*100).toInt(),
-                tomorrowHighTemp = tomorrowHighTemp,
-                tomorrowRainChance = (maxRainChanceNextDay*100).toInt()
+                day1HighF = day1HighF,
+                day1LowF = day1LowF,
+                day1PrecipPct = day1PrecipPct,
+                day1Icon = day1Icon,
+                day2HighF = day2HighF,
+                day2LowF = day2LowF,
+                day2PrecipPct = day2PrecipPct,
+                day2Icon = day2Icon
             )
             WeatherResult.Success(weatherData)
         } catch (e: Exception) {

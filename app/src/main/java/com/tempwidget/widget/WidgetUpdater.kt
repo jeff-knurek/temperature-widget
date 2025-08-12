@@ -64,9 +64,11 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
         views.setTextViewTextSize(R.id.humidity, TypedValue.COMPLEX_UNIT_SP, humiditySize)
         views.setTextViewTextSize(R.id.dew_point, TypedValue.COMPLEX_UNIT_SP, dewPointSize)
         views.setTextViewTextSize(R.id.rain_chance, TypedValue.COMPLEX_UNIT_SP, rainChanceSize)
-        views.setTextViewTextSize(R.id.tomorrow_forecast, TypedValue.COMPLEX_UNIT_SP, tomorrowSize)
         views.setTextViewTextSize(R.id.location_name, TypedValue.COMPLEX_UNIT_SP, locationSize)
         views.setTextViewTextSize(R.id.widget_time, TypedValue.COMPLEX_UNIT_SP, widgetTimeSize)
+        // Apply size to the two-day content rows
+        views.setTextViewTextSize(R.id.tomorrow_content, TypedValue.COMPLEX_UNIT_SP, tomorrowSize)
+        views.setTextViewTextSize(R.id.day_after_content, TypedValue.COMPLEX_UNIT_SP, tomorrowSize)
         // Show loading state
         views.setTextViewText(R.id.location_name, "Getting location...")
         appWidgetManager.updateAppWidget(appWidgetId, views)
@@ -111,15 +113,39 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
                             R.id.dew_point,
                             "Dew: ${TemperatureUtils.formatTemperature(weatherData.dewPoint, "F")}"
                         )
-                        // Set rain chance and tomorrow forecast
+                        // Set rain chance next 3h
                         views.setTextViewText(
                             R.id.rain_chance,
                             "Rain (3h): ${if (weatherData.rainChanceNext3h >= 0) weatherData.rainChanceNext3h else "--"}%"
                         )
-                        views.setTextViewText(
-                            R.id.tomorrow_forecast,
-                            "Tomorrow: ${if (!weatherData.tomorrowHighTemp.isNaN()) TemperatureUtils.formatTemperature(weatherData.tomorrowHighTemp, "F") else "--°F"} / ${if (weatherData.tomorrowRainChance >= 0) weatherData.tomorrowRainChance else "--"}%"
+                        // Set next two days content (skip today)
+                        val day1Text = formatDailyContent(
+                            weatherData.day1HighF,
+                            weatherData.day1LowF,
+                            weatherData.day1PrecipPct
                         )
+                        val day2Text = formatDailyContent(
+                            weatherData.day2HighF,
+                            weatherData.day2LowF,
+                            weatherData.day2PrecipPct
+                        )
+                        views.setTextViewText(R.id.tomorrow_content, day1Text)
+                        views.setTextViewText(R.id.day_after_content, day2Text)
+                        // Set icons if available
+                        val icon1 = resolveIconResource(context, weatherData.day1Icon)
+                        if (icon1 != 0) {
+                            views.setImageViewResource(R.id.icon_tomorrow, icon1)
+                            views.setViewVisibility(R.id.icon_tomorrow, android.view.View.VISIBLE)
+                        } else {
+                            views.setViewVisibility(R.id.icon_tomorrow, android.view.View.GONE)
+                        }
+                        val icon2 = resolveIconResource(context, weatherData.day2Icon)
+                        if (icon2 != 0) {
+                            views.setImageViewResource(R.id.icon_day_after, icon2)
+                            views.setViewVisibility(R.id.icon_day_after, android.view.View.VISIBLE)
+                        } else {
+                            views.setViewVisibility(R.id.icon_day_after, android.view.View.GONE)
+                        }
                         // Set local time in bottom right
                         val localTime = try {
                             java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
@@ -147,4 +173,18 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
         }
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
+}
+
+private fun formatDailyContent(highF: Double, lowF: Double, precipPct: Int): String {
+    val hi = if (!highF.isNaN()) "${highF.roundToInt()}" else "--"
+    val lo = if (!lowF.isNaN()) "${lowF.roundToInt()}" else "--"
+    val precip = if (precipPct >= 0) "$precipPct%" else "--%"
+    return "$hi/$lo°F\nRain: $precip"
+}
+
+private fun resolveIconResource(context: Context, apiIcon: String): Int {
+    if (apiIcon.isBlank()) return 0
+    val base = apiIcon.replace("-", "_")
+    // Expect ic_ prefix in filename: ic_clear_day
+    return context.resources.getIdentifier("ic_" + base, "drawable", context.packageName)
 }

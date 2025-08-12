@@ -8,9 +8,16 @@ data class WeatherData(
     val humidity: Double,            // Relative humidity percentage
     val dewPoint: Double,            // Dew point in Fahrenheit
     val rainChanceNext3h: Int = -1,  // % chance of rain in next 3 hours
-    val tomorrowHighTemp: Double = Double.NaN, // Tomorrow's high temp (F)
-    val tomorrowRainChance: Int = -1, // Highest % chance of rain tomorrow
-    val locationName: String = "Unknown Location"
+    val locationName: String = "Unknown Location",
+    // Next two days (skip today) forecast data
+    val day1HighF: Double = Double.NaN,
+    val day1LowF: Double = Double.NaN,
+    val day1PrecipPct: Int = -1,
+    val day1Icon: String = "",
+    val day2HighF: Double = Double.NaN,
+    val day2LowF: Double = Double.NaN,
+    val day2PrecipPct: Int = -1,
+    val day2Icon: String = ""
 )
 
 /**

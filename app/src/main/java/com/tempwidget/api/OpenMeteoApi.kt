@@ -65,9 +65,7 @@ class OpenMeteoApi(private val context: Context) : WeatherApi {
             // Get dew point from hourly data (current hour)
             val hourly = jsonObject.getJSONObject("hourly")
             val dewPointArray = hourly.getJSONArray("dew_point_2m")
-            val tempArray = hourly.getJSONArray("temperature_2m")
             val precipProbArray = hourly.getJSONArray("precipitation_probability")
-            val timeArray = hourly.getJSONArray("time")
             val dewPoint = if (dewPointArray.length() > 0) {
                 dewPointArray.getDouble(0)
             } else {
@@ -80,28 +78,11 @@ class OpenMeteoApi(private val context: Context) : WeatherApi {
             for (i in nowIndex until minOf(nowIndex + 3, precipProbArray.length())) {
                 rainChanceNext3h = maxOf(rainChanceNext3h, precipProbArray.getInt(i))
             }
-            // Find tomorrow's date string (YYYY-MM-DD)
-            val tomorrowDate = timeArray.getString(0).substring(0, 10)
-            var tomorrowHighTemp = Double.NaN
-            var tomorrowRainChance = -1
-            val tomorrowTemps = mutableListOf<Double>()
-            for (i in 0 until timeArray.length()) {
-                val timeStr = timeArray.getString(i)
-                if (timeStr.startsWith(tomorrowDate)) {
-                    tomorrowTemps.add(tempArray.getDouble(i))
-                    tomorrowRainChance = maxOf(tomorrowRainChance, precipProbArray.getInt(i))
-                }
-            }
-            if (tomorrowTemps.isNotEmpty()) {
-                tomorrowHighTemp = tomorrowTemps.maxOrNull() ?: Double.NaN
-            }
             val weatherData = WeatherData(
                 currentTemperature = temperature,
                 humidity = humidity,
                 dewPoint = dewPoint,
-                rainChanceNext3h = rainChanceNext3h,
-                tomorrowHighTemp = tomorrowHighTemp,
-                tomorrowRainChance = tomorrowRainChance
+                rainChanceNext3h = rainChanceNext3h
             )
             WeatherResult.Success(weatherData)
         } catch (e: Exception) {
