@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+def pirateWeatherApiKey = (project.findProperty("pirate_weather_api_key") ?: System.getenv("PIRATE_WEATHER_API_KEY") ?: "")
+
 android {
     namespace = 'com.tempwidget'
     compileSdk = 35
@@ -13,12 +15,17 @@ android {
         targetSdk = 28  // Broad Fire tablet compatibility (API 28)
         versionCode = 1
         versionName = "1.0"
+        buildConfigField "String", "PIRATE_WEATHER_API_KEY", "\"${pirateWeatherApiKey}\""
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
     buildTypes {
         release {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "DEBUG", "false"
         }
     }
 

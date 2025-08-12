@@ -8,15 +8,21 @@ A temperature widget for Android devices, specifically designed for Amazon Fire 
 - **AppWidgetProvider**: `TempWidgetProvider` - Core widget functionality
 - **Weather API**: Modular design with `WeatherApi` interface
 - **Location Services**: Native Android LocationManager (no Google Play Services)
+    - `this isn't quite working yet`
 - **Background Updates**: WorkManager for reliable background updates
 
 ### Current Weather Service
-- **Open-Meteo API**: https://open-meteo.com/en/docs
-    - No API key required
+- **Pirate-Weather API**: https://pirateweather.net/en/latest/API/
+    - API is key required
+- **REPLACED**:
+    - _Open-Meteo API_: https://open-meteo.com/en/docs
+        - accuracy of percipitation was not very good
+        - No API key required
 
 ## Development Setup
 
 1. **Open in Android Studio**
+2. cp `gradle.properties` to `~/.gradle/gradle.properties` and set the `pirate_weather_api_key` in that file
 2. **Build and run** on an emulator or device
 3. **Add widget** to home screen through long-press menu
 
@@ -45,6 +51,21 @@ class NewWeatherService : WeatherApi {
 }
 ```
 
+### Copying to Fire Tablet
+
+1. Build apk in Android Studio: Build > Generate App Bundles > Generate APK
+2. rename the new apk file that was built
+3. copy to Downloads folder
+4.
+```bash
+cd ~/Downloads/
+ifconfig | grep 192
+python3 -m http.server 808
+```
+5. In tablet browser, go to the computers IP:808 and download the apk file
+6. Click on file and Install
+7. Use Nova Launcher to open widget
+
 ## Permissions
 
 - `ACCESS_FINE_LOCATION`: For precise location data
@@ -55,11 +76,18 @@ class NewWeatherService : WeatherApi {
 
 ## Future Enhancements
 
-- Weather forecast display
-- Humidity and dew point information
-- Multiple weather service support
+- Weather icon display
+    https://github.com/b-reich/MMM-PirateSkyForecast/blob/main/icons/iconsets.png
 - Widget configuration activity
 - Custom themes and colors
+
+### alternatives for Weather API
+- a listing of different ideas: https://www.reddit.com/r/homeassistant/comments/1f2w3xo/best_free_weather_integration_open_weather_dead/
+	- https://pirateweather.net/en/latest/API/
+	- https://openweathermap.org/api/one-call-3
+	- https://www.weatherapi.com/docs/
+	- https://www.weather.gov/documentation/services-web-api
+	- https://docs.tomorrow.io/reference/welcome
 
 ## License
 

@@ -5,7 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.widget.RemoteViews
 import com.tempwidget.R
-import com.tempwidget.api.OpenMeteoApi
+import com.tempwidget.api.PirateWeatherApi
 import com.tempwidget.data.LocationResult
 import com.tempwidget.data.WeatherResult
 import com.tempwidget.location.LocationManager
@@ -25,7 +25,7 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
         ComponentName(context, com.tempwidget.widget.TempWidgetProvider::class.java)
     )
     val locationManager = LocationManager(context)
-    val weatherApi = OpenMeteoApi(context)
+    val weatherApi = PirateWeatherApi(context)
 
     widgetIds.forEach { appWidgetId ->
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
