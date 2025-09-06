@@ -62,9 +62,9 @@ class LocationManager(private val context: Context) {
                     // fallback to default coordinates
                     LocationResult.Success(
                         Location(
-                            latitude = 42.0824,
-                            longitude = -71.3967,
-                            name = "MA (default)"
+                            latitude = 43.0228,
+                            longitude = -70.9163,
+                            name = "NH (default)"
                         )
                     )
                 }

@@ -36,13 +36,13 @@ suspend fun updateAllMainWidgets(context: Context) = withContext(Dispatchers.IO)
         val scale = (minWidth / 200f).coerceIn(1f, 2.5f)
         // Temp text size: scale between 48sp and 130sp
         val tempTextSizeF = (48f + (130f - 48f) * ((scale - 1f) / (2.5f - 1f))).coerceIn(48f, 130f)
-        val tempTextSizeC = (40f + (110f - 40f) * ((scale - 1f) / (2.5f - 1f))).coerceIn(48f, 130f)
+        val tempTextSizeC = (36f + (105f - 36f) * ((scale - 1f) / (2.5f - 1f))).coerceIn(36f, 110f)
         // Other text fields: default and max sizes
         val humidityDefault = 14f
         val dewPointDefault = 14f
         val rainChanceDefault = 14f
         val tomorrowDefault = 14f
-        val locationDefault = 18f
+        val locationDefault = 16f
         val widgetTimeDefault = 12f
         // Max sizes
         val humidityMax = humidityDefault * 2.5f
